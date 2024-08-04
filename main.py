@@ -3,6 +3,7 @@ import os
 import numpy as np
 from module.circuit import Circuit
 from module.tokenizer import Tokenizer
+from module.optimizer import AdamOptimizer  # Import the desired optimizer
 
 def load_data(file_path):
     """Lädt die Daten aus einer JSON-Datei."""
@@ -54,6 +55,27 @@ def main():
     print("\nEndgültige Zählungen aller Zustände:")
     for state, count in counts.items():
         print(f"{state}: {count}")
+
+    # Zielzustand für die Optimierung (angenommen)
+    target_state = '00'
+
+    # Initialisieren des Optimierers
+    print("\nInitialisiere den Adam Optimizer...")
+    optimizer = AdamOptimizer(
+        circuit=circuit,
+        target_state=target_state,
+        learning_rate=0.01,
+        max_iterations=100
+    )
+
+    # Optimierung ausführen
+    print("Starte Optimierung...")
+    optimized_phases, losses = optimizer.optimize()
+
+    print("\nOptimierte Phasen:")
+    print(optimized_phases)
+    print("\nVerlaufsverlust:")
+    print(losses)
 
 if __name__ == '__main__':
     main()

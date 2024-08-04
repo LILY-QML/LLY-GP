@@ -1,0 +1,145 @@
+name: Quantum CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - save
+  pull_request:
+    branches:
+      - main
+      - dev
+      - save
+
+jobs:
+  # Test Job
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'  # Use Python 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests
+        run: |
+          python -m unittest discover -s . -p 'test*.py'
+
+      - name: Code Quality Check
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+  # Report Job (Only for main and save branches)
+  report:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/save'
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate Quantum Circuit Report
+        run: |
+          python main.py
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Quantum Circuit Report
+          path: var/QuantumCircuitReport.pdf
+
+  # Documentation Job
+  docs:
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Sphinx
+        run: |
+          python -m pip install sphinx sphinx_rtd_theme
+
+      - name: Build Documentation
+        run: |
+          cd docs
+          make html  # Use the Makefile to build the documentation
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/save'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html
+
+  # Release Job
+  release:
+    runs-on: ubuntu-latest
+    needs: [test, docs]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/save'
+    permissions:
+      id-token: write  # Permission for OpenID Connect token
+      contents: write
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            ## Changes
+            - Automated release by GitHub Actions
+          draft: false
+          prerelease: false
