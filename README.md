@@ -9,9 +9,9 @@ For inquiries or further information, please contact: [info@lilyqml.de](mailto:i
 
 ## Contributors
 
-| Role                     | Name         | Links                                                                                                             |
-|--------------------------|--------------|-------------------------------------------------------------------------------------------------------------------|
-| Project Lead             | Leon Kaiser  | [ORCID](https://orcid.org/0009-0000-4735-2044), [GitHub](https://github.com/xleonplayz)                          |
-| Inquiries and Management | Raul Nieli   | [Email](mailto:raul.nieli@lilyqml.de)                                                                             |
-| Supporting Contributors  | Eileen Kühn  | [GitHub](https://github.com/eileen-kuehn), [KIT Profile](https://www-kseta.ttp.kit.edu/fellows/Eileen.Kuehn/)     |
-| Supporting Contributors  | Max Kühn     | [GitHub](https://github.com/maxfischer2781)                                                                       |
+| Role                     | Name          | Links                                                                                                                |
+|--------------------------|---------------|----------------------------------------------------------------------------------------------------------------------|
+| Project Lead             | Leon Kaiser   | [ORCID](https://orcid.org/0009-0000-4735-2044), [GitHub](https://github.com/xleonplayz)                              |
+| Inquiries and Management | Raul Nieli    | [Email](mailto:raul.nieli@lilyqml.de)                                                                                |
+| Supporting Contributors  | Eileen Kühn   | [GitHub](https://github.com/eileen-kuehn), [KIT Profile](https://www-kseta.ttp.kit.edu/fellows/Eileen.Kuehn/)        |
+| Supporting Contributors  | Max Kühn      | [GitHub](https://github.com/maxfischer2781)                                                                          |
