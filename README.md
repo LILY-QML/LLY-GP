@@ -38,6 +38,20 @@ By integrating these innovative techniques, **LLY-GP** significantly enhances th
 
 The model is based on **Generativ Qubit Processing (GP)**, which assigns each word the state of a multi-qubit system. This method enables precise word recognition and processing through quantum-based machine learning techniques.
 
+
+```mermaid
+graph TD;
+    A[Start] --> B[LLY-GP Model];
+    B --> C[DML Model Features];
+    B --> D[Tokenizer];
+    C --> E[GP Properties];
+    D --> E;
+    E --> F[GLLM Model];
+    F --> G[Large Language Model Functionality];
+    G --> H[Quantum-based Applications];
+    H --> I[End];
+```
+
 ## Optimization
 
 Optimization of the model is achieved by fine-tuning the parameters of quantum gates. This enhances the efficiency of quantum algorithms and allows for highly accurate results in language recognition.
