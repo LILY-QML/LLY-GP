@@ -29,7 +29,10 @@ For inquiries or further information, please contact: [info@lilyqml.de](mailto:i
 
 ## Model Usage
 
-The **LLY-GP** model is designed to optimize the recognition and assignment of languages. It plays a crucial role in the development of language-sensitive applications and systems based on quantum-based technologies.
+**LLY-GP** is a Quantum Machine Learning model that plays a crucial role in the development of future models within the **LILY Project**. It combines the gate properties of the **DML model** with a tokenizer, creating a robust foundation for future applications. This model acts as a precursor to the **GLLM model**, which leverages the properties of **GP** to function like a Large Language Model (LLM).
+
+By integrating these innovative techniques, **LLY-GP** significantly enhances the efficiency and performance of language models. With its ability to merge quantum mechanics and machine learning, **LLY-GP** is set to play a central role in the development of new quantum-based applications and systems.
+
 
 ## Functionality
 
