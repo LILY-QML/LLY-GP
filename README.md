@@ -38,6 +38,11 @@ By integrating these innovative techniques, **LLY-GP** significantly enhances th
 
 The model is based on **Generativ Qubit Processing (GP)**, which assigns each word the state of a multi-qubit system. This method enables precise word recognition and processing through quantum-based machine learning techniques.
 
+First, a word is transformed into a token by the tokenizer. These tokens are then inserted into the L-Gates of the quantum circuit. More information about the use of these L-Gates can be found [here](https://github.com/LILY-QML/LLY-DML).
+
+After the token is inserted, the most likely state is selected and checked to see if it is already assigned. If not, this state is associated with the word, and all tuning phases are optimized so that this state can be uniquely measured when this word is used.
+
+
 
 ```mermaid
 graph TD;
