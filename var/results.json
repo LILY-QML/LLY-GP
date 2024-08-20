@@ -1,11 +1,5 @@
 {
-    "words": [
-        "Quantencomputer",
-        "Wissenschaft",
-        "Technologie",
-        "Informatik",
-        "Programmierung"
-    ],
+    "word": "Quantencomputer",
     "input_matrix": [
         [
             0.31531866632562344,
@@ -259,5 +253,5 @@
             0.1965614134003243,
             0.9795587445572737
         ]
-    ]
-}
+    ],
+    "optimized_phases": 

@@ -3,79 +3,128 @@ import os
 import numpy as np
 from module.circuit import Circuit
 from module.tokenizer import Tokenizer
-from module.optimizer import AdamOptimizer  # Import the desired optimizer
+from module.optimizer import AdamOptimizer
+from module.visual import Visual  # Import the Visual class
+from qiskit.visualization import circuit_drawer
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def load_data(file_path):
-    """Lädt die Daten aus einer JSON-Datei."""
     with open(file_path, 'r') as f:
         data = json.load(f)
     return data
 
 def generate_random_matrix(rows, cols):
-    """Erzeugt eine zufällige Matrix der Größe rows x cols."""
     return np.random.rand(rows, cols)
 
+def plot_heatmap(matrix, title, filename):
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(matrix, annot=True, cmap="viridis")
+    plt.title(title)
+    plt.savefig(filename)
+    plt.close()
+
+def plot_loss_curve(losses, filename):
+    plt.figure(figsize=(10, 6))
+    plt.plot(losses, label="Training Loss")
+    plt.xlabel("Iterations")
+    plt.ylabel("Loss")
+    plt.title("Loss During Training")
+    plt.legend()
+    plt.savefig(filename)
+    plt.close()
+
+def plot_histogram(counts, filename):
+    plt.figure(figsize=(10, 6))
+    plt.bar(counts.keys(), counts.values())
+    plt.xlabel("Quantum States")
+    plt.ylabel("Counts")
+    plt.title("Probability Distribution of Quantum States")
+    plt.savefig(filename)
+    plt.close()
+
 def main():
-    # Schritt 1: Laden der Daten aus der JSON-Datei
+    # Step 1: Load data from the JSON file
     print("Lade JSON-Daten...")
     file_path = os.path.join('var', 'data.json')
     data = load_data(file_path)
 
-    # Extrahieren der Wörter aus den Daten
+    # Extract words from the data
     words = data['words']
 
-    # Initialisieren des Tokenizers
+    # Initialize the tokenizer
     tokenizer = Tokenizer()
 
-    # Wählen Sie ein Wort zum Tokenisieren
+    # Tokenize the first word
     print("Tokenisiere das erste Wort...")
-    word = words[0]  # Annahme: Wir verwenden das erste Wort
+    word = words[0]
     token = tokenizer.tokenize(word)
 
-    # Erzeugen der Input-Matrix aus dem Token
+    # Create input matrix from the token
     input_matrix = np.array(token)
     print(f"Input-Matrix für '{word}' erstellt.")
 
-    # Erzeugen der zufälligen Trainingsmatrix der Größe 20x3
+    # Generate random training matrix
     print("Erzeuge zufällige Trainingsmatrix...")
-    training_matrix = generate_random_matrix(20, 3)
+    training_matrix = generate_random_matrix(25, 3)
     print("Trainingsmatrix erstellt.")
 
-    # Initialisieren und Erstellen des Schaltkreises
+    # Initialize and create the quantum circuit
     print("Erstelle und konfiguriere den Quantenkreis...")
-    qubits = 20
-    circuit = Circuit(input_matrix, training_matrix, qubits)
-    circuit.create_circuit()
-    circuit.measure()  # Messpunkte hinzufügen
-    print("Quantenkreis erstellt und gemessen.")
+    qubits = 25
+    depth = 3
+    shots = 1024
+    circuit = Circuit(qubits, depth, training_matrix, input_matrix, shots)
 
-    # Ausführen des Schaltkreises und Ergebnisse anzeigen
-    print("Führe den Quantenkreis aus...")
-    counts = circuit.complete_run()
-    print("\nEndgültige Zählungen aller Zustände:")
-    for state, count in counts.items():
-        print(f"{state}: {count}")
+    # Draw the quantum circuit as an image
+    print("Erstelle Bild des Quantenkreises...")
+    circuit_image_path = "quantum_circuit.png"
+    circuit_drawer(circuit.circuit, output='mpl', filename=circuit_image_path)
 
-    # Zielzustand für die Optimierung (angenommen)
+    # Plot the initial training matrix as a heatmap
+    print("Erstelle Heatmap der Trainingsmatrix...")
+    initial_heatmap_path = "initial_training_matrix.png"
+    plot_heatmap(training_matrix, "Initial Training Matrix", initial_heatmap_path)
+
+    # Step 2: Run the optimizer
+    print("Starte Optimierung...")
     target_state = '00'
-
-    # Initialisieren des Optimierers
-    print("\nInitialisiere den Adam Optimizer...")
     optimizer = AdamOptimizer(
         circuit=circuit,
         target_state=target_state,
         learning_rate=0.01,
         max_iterations=100
     )
-
-    # Optimierung ausführen
-    print("Starte Optimierung...")
     optimized_phases, losses = optimizer.optimize()
 
-    print("\nOptimierte Phasen:")
-    print(optimized_phases)
-    print("\nVerlaufsverlust:")
-    print(losses)
+    # Plot the loss curve
+    print("Erstelle Loss-Plot...")
+    loss_plot_path = "loss_curve.png"
+    plot_loss_curve(losses, loss_plot_path)
+
+    # After optimization, plot the new training matrix
+    print("Erstelle Heatmap der optimierten Trainingsmatrix...")
+    final_heatmap_path = "final_training_matrix.png"
+    plot_heatmap(circuit.training_phases, "Optimized Training Matrix", final_heatmap_path)
+
+    # Run the quantum circuit and get the counts
+    print("Führe den Quantenkreis aus und erstelle Histogramm...")
+    counts = circuit.run()
+    histogram_path = "quantum_histogram.png"
+    plot_histogram(counts, histogram_path)
+
+    # Create the PDF report
+    print("Erstelle PDF-Bericht...")
+    visual = Visual()
+    visual.generate_report(
+        circuit_image_path, 
+        input_matrix, 
+        training_matrix, 
+        initial_heatmap_path, 
+        final_heatmap_path, 
+        loss_plot_path, 
+        histogram_path
+    )
 
 if __name__ == '__main__':
     main()

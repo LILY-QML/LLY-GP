@@ -1,9 +1,7 @@
-import string
-
 class Tokenizer:
-    def __init__(self):
-        self.token_length = 20
-        self.float_components = 3
+    def __init__(self, token_length=25):
+        self.token_length = token_length  # Setze die Token-Länge auf 25 Zeichen
+        self.float_components = 3  # Jeder Buchstabe wird durch drei Werte repräsentiert: ASCII, Position, Kontext
 
     def tokenize(self, word):
         # Kürzen oder auffüllen, um die richtige Länge zu erreichen
@@ -18,7 +16,7 @@ class Tokenizer:
         return token
 
     def prepare_word(self, word):
-        # Konvertiere das Wort zu einer Länge von 20 Zeichen
+        # Konvertiere das Wort zu einer Länge von 25 Zeichen
         if len(word) > self.token_length:
             # Kürze das Wort
             return word[:self.token_length]
